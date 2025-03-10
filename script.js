@@ -28,12 +28,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (mot && definition) {
             mots.push({ mot, definition });
+            trierMots();
             sauvegarderMots();
             afficherMots();
             document.getElementById("mot").value = "";
             document.getElementById("definition").value = "";
         }
     });
+
+    // Trier les mots par ordre alphabétique
+    function trierMots() {
+        mots.sort((a, b) => a.mot.localeCompare(b.mot));
+    }
 
     // Afficher la liste des mots et mettre à jour le compteur
     function afficherMots() {
@@ -80,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const reader = new FileReader();
             reader.onload = function (event) {
                 mots = JSON.parse(event.target.result);
+                trierMots();
                 sauvegarderMots(); // Mettre à jour Local Storage
                 afficherMots();
             };
