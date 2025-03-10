@@ -1,0 +1,147 @@
+/* 🌟 Reset et styles de base */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: white;
+}
+
+/* 🌟 Conteneur principal */
+.container {
+    width: 90%;
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    margin-bottom: 80px;
+    color: black;
+}
+
+/* 🌟 Sections */
+.section {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease-in-out;
+}
+
+.section.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 🌟 Titres */
+h2 {
+    text-align: center;
+    color: #2a5298;
+}
+
+/* 🌟 Inputs et Textarea */
+input, textarea {
+    width: calc(100% - 20px);
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* 🌟 Boutons */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #2a5298;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #1e3c72;
+}
+
+/* 🌟 Liste des mots */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background: #f4f4f4;
+    color: black;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+li:hover {
+    background: #dce3f2;
+}
+
+/* 🌟 Barre de navigation */
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #2a5298;
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0;
+}
+
+.nav-bar button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-bar button:hover {
+    transform: scale(1.1);
+}
+
+/* 🌟 Modale */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+    border-radius: 12px;
+    color: black;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+}
