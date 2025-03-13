@@ -15,6 +15,7 @@
             <input type="text" id="mot" placeholder="Mot">
             <textarea id="definition" placeholder="Définition"></textarea>
             <button id="ajouter">Ajouter</button>
+            <button onclick="showRandomWord()">Obtenir un mot aléatoire</button>
         </section>
 
         <!-- Section Liste des mots -->
@@ -40,6 +41,19 @@
         <button data-section="fichier">Fichier</button>
     </div>
 
+    <div id="wordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="randomWord"></h2>
+            <p id="wordDefinition"></p>
+            <button id="translateButton" onclick="translateWord()">Traduire en français</button>
+            <h3 id="translatedWord"></h3>
+            <p id="translatedDefinition"></p>
+        </div>
+    </div>
+    
+    
+
     <!-- Fenêtre modale pour afficher la définition -->
     <div id="modal" class="modal">
         <div class="modal-content">
@@ -52,4 +66,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
