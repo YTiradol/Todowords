@@ -1,13 +1,15 @@
 /* 🌟 Reset et styles de base */
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #0e244e, #073686);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     margin: 0;
     color: white;
+    transition: all 0.3s ease-in-out;
 }
 
 /* 🌟 Conteneur principal */
@@ -15,11 +17,24 @@ body {
     width: 90%;
     max-width: 500px;
     background: white;
-    padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
     margin-bottom: 80px;
     color: black;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 🌟 Effet de transition */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* 🌟 Sections */
@@ -40,16 +55,25 @@ body {
 h2 {
     text-align: center;
     color: #2a5298;
+    font-weight: bold;
+    font-size: 22px;
 }
 
 /* 🌟 Inputs et Textarea */
 input, textarea {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: 12px;
     margin-top: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 16px;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: #2a5298;
+    outline: none;
+    box-shadow: 0 0 8px rgba(42, 82, 152, 0.5);
 }
 
 /* 🌟 Boutons */
@@ -64,11 +88,13 @@ button {
     background: #2a5298;
     color: white;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 button:hover {
     background: #1e3c72;
+    transform: scale(1.05);
 }
 
 /* 🌟 Liste des mots */
@@ -80,15 +106,17 @@ ul {
 li {
     background: #f4f4f4;
     color: black;
-    margin: 5px 0;
-    padding: 10px;
+    margin: 8px 0;
+    padding: 12px;
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 li:hover {
     background: #dce3f2;
+    transform: scale(1.02);
 }
 
 /* 🌟 Barre de navigation */
@@ -101,6 +129,7 @@ li:hover {
     display: flex;
     justify-content: space-around;
     padding: 15px 0;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .nav-bar button {
@@ -111,10 +140,15 @@ li:hover {
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    padding: 5px 10px;
 }
 
 .nav-bar button:hover {
     transform: scale(1.1);
+}
+
+.nav-bar button.active {
+    border-bottom: 3px solid white;
 }
 
 /* 🌟 Modale */
@@ -128,15 +162,22 @@ li:hover {
     background: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    transition: 0.3s ease-in-out;
+}
+
+.modal.active {
+    display: flex;
 }
 
 .modal-content {
     background: white;
     padding: 20px;
     text-align: center;
-    width: 300px;
+    width: 320px;
     border-radius: 12px;
     color: black;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
 }
 
 .close {
@@ -144,4 +185,37 @@ li:hover {
     cursor: pointer;
     font-size: 20px;
     font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover {
+    color: red;
+}
+
+/* Styles de la modale */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+    text-align: center;
+    border-radius: 10px;
+}
+.close {
+    color: red;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
 }
