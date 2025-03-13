@@ -8,20 +8,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const supprimerTousBtn = document.getElementById("supprimerTous");
     const chargerFichier = document.getElementById("chargerFichier");
     const navButtons = document.querySelectorAll(".nav-bar button");
+    const modal = document.getElementById("modal");
+    const modalMot = document.getElementById("modalMot");
+    const modalDefinition = document.getElementById("modalDefinition");
+    const closeModal = document.querySelector(".close");
+    
+    let mots = JSON.parse(localStorage.getItem("mots")) || [];
+    afficherMots();
 
-    let mots = JSON.parse(localStorage.getItem("mots")) || []; // Charger depuis Local Storage
-
-    afficherMots(); // Charger les mots au démarrage
-
-    // Changer de section via la barre de navigation
+    // Gestion des onglets de navigation
     navButtons.forEach(button => {
         button.addEventListener("click", () => {
             sections.forEach(section => section.classList.remove("active"));
             document.getElementById(button.dataset.section).classList.add("active");
+            navButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
         });
     });
 
-    // Ajouter un mot
+    // Ajouter un mot avec animation
     ajouterBtn.addEventListener("click", () => {
         const mot = document.getElementById("mot").value.trim();
         const definition = document.getElementById("definition").value.trim();
@@ -36,41 +41,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Trier les mots par ordre alphabétique
     function trierMots() {
         mots.sort((a, b) => a.mot.localeCompare(b.mot));
     }
 
-    // Afficher la liste des mots et mettre à jour le compteur
     function afficherMots() {
         motsListe.innerHTML = "";
         mots.forEach((item, index) => {
             const li = document.createElement("li");
             li.textContent = item.mot;
-            li.addEventListener("click", () => afficherDefinition(index));
+            li.classList.add("fade-in");
+            li.addEventListener("click", () => afficherDefinition(index, li));
             motsListe.appendChild(li);
         });
-        compteurMots.textContent = mots.length; // Mise à jour du compteur
+        compteurMots.textContent = mots.length;
     }
 
-    // Sauvegarder les mots dans le Local Storage
     function sauvegarderMots() {
         localStorage.setItem("mots", JSON.stringify(mots));
     }
 
-    // Afficher la définition dans une fenêtre modale
-    function afficherDefinition(index) {
-        document.getElementById("modalMot").textContent = mots[index].mot;
-        document.getElementById("modalDefinition").textContent = mots[index].definition;
-        document.getElementById("modal").style.display = "flex";
+    function afficherDefinition(index, element) {
+        modalMot.textContent = mots[index].mot;
+        modalDefinition.textContent = mots[index].definition;
+        modal.classList.add("active");
+        
+        document.querySelectorAll("#motsListe li").forEach(li => li.classList.remove("active"));
+        element.classList.add("active");
     }
 
-    // Fermer la modale
-    document.querySelector(".close").addEventListener("click", () => {
-        document.getElementById("modal").style.display = "none";
+    closeModal.addEventListener("click", () => {
+        modal.classList.remove("active");
     });
 
-    // Sauvegarder en fichier JSON
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.classList.remove("active");
+        }
+    });
+
     enregistrerBtn.addEventListener("click", () => {
         const blob = new Blob([JSON.stringify(mots)], { type: "application/json" });
         const a = document.createElement("a");
@@ -79,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         a.click();
     });
 
-    // Charger un fichier JSON
     chargerBtn.addEventListener("click", () => {
         const file = chargerFichier.files[0];
         if (file) {
@@ -87,17 +95,101 @@ document.addEventListener("DOMContentLoaded", () => {
             reader.onload = function (event) {
                 mots = JSON.parse(event.target.result);
                 trierMots();
-                sauvegarderMots(); // Mettre à jour Local Storage
+                sauvegarderMots();
                 afficherMots();
             };
             reader.readAsText(file);
         }
     });
 
-    // Supprimer tous les mots
     supprimerTousBtn.addEventListener("click", () => {
         mots = [];
-        localStorage.removeItem("mots"); // Effacer du Local Storage
+        localStorage.removeItem("mots");
         afficherMots();
     });
 });
+
+async function getRandomWord() {
+    try {
+        let wordResponse = await fetch("https://random-word-api.herokuapp.com/word");
+        let wordArray = await wordResponse.json();
+        let word = wordArray[0];
+
+        let definitionResponse = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        let definitionData = await definitionResponse.json();
+
+        if (definitionData.title) {
+            return getRandomWord(); // Si pas de définition, recommencer
+        }
+
+        let definition = definitionData[0].meanings[0].definitions[0].definition;
+        return { word, definition };
+    } catch (error) {
+        console.error("Erreur lors de la récupération du mot :", error);
+    }
+}
+
+// Ouvre la modale avec un nouveau mot
+async function showRandomWord() {
+    let data = await getRandomWord();
+    if (data) {
+        document.getElementById("randomWord").textContent = `Mot : ${data.word}`;
+        document.getElementById("wordDefinition").textContent = `Définition : ${data.definition}`;
+
+        // Réinitialiser la traduction
+        document.getElementById("translatedWord").textContent = "";
+        document.getElementById("translatedDefinition").textContent = "";
+
+        // Réafficher le bouton de traduction
+        document.getElementById("translateButton").style.display = "block";
+
+        document.getElementById("wordModal").style.display = "block"; // Afficher la modale
+    }
+}
+
+// Fermer la modale
+function closeModal() {
+    document.getElementById("wordModal").style.display = "none";
+}
+
+// Traduire du texte avec l'API MyMemory
+async function translateText(text) {
+    try {
+        let response = await fetch("https://api.mymemory.translated.net/get?q=" + encodeURIComponent(text) + "&langpair=en|fr");
+        let data = await response.json();
+        return data.responseData.translatedText;
+    } catch (error) {
+        console.error("Erreur de traduction :", error);
+        return "Traduction non disponible";
+    }
+}
+
+async function translateWord() {
+    let word = document.getElementById("randomWord").textContent.replace("Mot : ", "");
+    let definition = document.getElementById("wordDefinition").textContent.replace("Définition : ", "");
+
+    let translatedWord = await translateText(word);
+    let translatedDefinition = await translateText(definition);
+
+    document.getElementById("translatedWord").textContent = `Mot en français : ${translatedWord}`;
+    document.getElementById("translatedDefinition").textContent = `Définition en français : ${translatedDefinition}`;
+
+    // Cacher le bouton après traduction et afficher "Ajouter à la liste"
+    document.getElementById("translateButton").style.display = "none";
+    document.getElementById("addToListButton").style.display = "block";
+}
+
+function addTranslatedWord() {
+    let translatedWord = document.getElementById("translatedWord").textContent.replace("Mot en français : ", "").trim();
+    let translatedDefinition = document.getElementById("translatedDefinition").textContent.replace("Définition en français : ", "").trim();
+
+    if (translatedWord && translatedDefinition) {
+        mots.push({ mot: translatedWord, definition: translatedDefinition });
+        trierMots();
+        sauvegarderMots();
+        afficherMots();
+        
+        // Fermer la modale après l'ajout
+        closeModal();
+    }
+}
